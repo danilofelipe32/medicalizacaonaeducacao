@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { encontrosData } from './constants';
-import { BookOpenIcon, BeakerIcon, AcademicCapIcon } from './components/icons';
+import { BookOpenIcon, BeakerIcon, AcademicCapIcon, ShareIcon } from './components/icons';
+import { TimelineItem } from './components/TimelineItem';
+import { Encontro } from './types';
 
 const Header = () => {
   const handleNavClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -40,6 +42,10 @@ const Header = () => {
 
 const Hero = () => {
   const parallaxBgRef = useRef<HTMLDivElement>(null);
+  const [shareText, setShareText] = useState('Compartilhar');
+  const [isBgLoaded, setIsBgLoaded] = useState(false);
+
+  const imageUrl = "https://i.imgur.com/p9ifsEn.jpg";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,18 +55,46 @@ const Hero = () => {
       }
     };
     window.addEventListener('scroll', handleScroll);
+    
+    // Progressive image loading simulation
+    const img = new Image();
+    img.src = imageUrl;
+    img.onload = () => {
+      // Small delay to make the effect noticeable
+      setTimeout(() => setIsBgLoaded(true), 200);
+    };
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [imageUrl]);
 
-  const imageUrl = "https://i.imgur.com/p9ifsEn.jpg";
+  const handleShare = async () => {
+    const shareData = {
+      title: document.title,
+      text: 'Confira esta pesquisa sobre o Fenômeno da Medicalização da Educação.',
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.error('Erro ao compartilhar:', err);
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        setShareText('Link Copiado!');
+        setTimeout(() => setShareText('Compartilhar'), 2000);
+      });
+    }
+  };
 
   return (
     <section className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-slate-900">
       <div
         ref={parallaxBgRef}
-        className="absolute top-0 left-0 w-full h-full bg-cover bg-center z-0"
+        className={`absolute top-0 left-0 w-full h-full bg-cover bg-center z-0 transition-all duration-1000 ease-in-out ${isBgLoaded ? 'blur-none scale-100' : 'blur-md scale-110'}`}
         style={{ backgroundImage: `url(${imageUrl})` }}
       ></div>
       <div className="absolute inset-0 bg-black/60 z-0"></div>
@@ -77,6 +111,14 @@ const Hero = () => {
         <p className="mt-4 text-md text-slate-400">
           Pesquisa de Kessiane Sales Izidim da Silva
         </p>
+        <button
+          onClick={handleShare}
+          className="mt-8 inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-blue-500 transition-all duration-300 transform hover:scale-105"
+          aria-label="Compartilhar página"
+        >
+          <ShareIcon className="w-5 h-5 mr-2" />
+          <span>{shareText}</span>
+        </button>
       </div>
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10">
         <div className="w-6 h-10 border-2 border-slate-400 rounded-full flex justify-center p-1">
@@ -104,7 +146,7 @@ const Section: React.FC<{ icon: React.ReactNode; title: string; children: React.
     </section>
 );
 
-const SectionCard: React.FC<{ title: string; category: string; children: React.ReactNode }> = ({ title, category, children }) => (
+const SectionCard: React.FC<{ title: string; category: string; children: React.ReactNode }> = React.memo(({ title, category, children }) => (
     <div className="bg-slate-800 p-6 rounded-lg border border-slate-700 shadow-lg transition-all duration-300 hover:bg-slate-700 hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/20">
         <p className="mb-2 text-sm font-medium text-blue-400 uppercase tracking-wider">{category}</p>
         <h3 className="mb-3 font-bold text-slate-100 text-xl">{title}</h3>
@@ -112,85 +154,7 @@ const SectionCard: React.FC<{ title: string; category: string; children: React.R
             {children}
         </div>
     </div>
-);
-
-interface Encontro {
-  date: string;
-  title: string;
-}
-
-const TimelineItem: React.FC<{ encontro: Encontro; index: number }> = ({ encontro, index }) => {
-  const ownRef = useRef<HTMLLIElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(entry.target);
-        }
-      },
-      {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1,
-      }
-    );
-
-    const currentRef = ownRef.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
-    };
-  }, []);
-  
-  const isLeft = index % 2 === 0;
-
-  const contentCard = (
-      <div className={`relative bg-slate-800 p-4 rounded-lg border border-slate-700 shadow-lg motion-safe:transition-all motion-safe:duration-500 motion-safe:ease-out transform hover:bg-slate-700 hover:-translate-y-1 hover:shadow-blue-500/20
-          ${isVisible ? 'opacity-100 translate-x-0' : `opacity-0 ${isLeft ? '-translate-x-4' : 'translate-x-4'}`
-        }`}>
-          {/* Puntero/Triángulo */}
-          <div className={`absolute w-3 h-3 bg-slate-800 border-slate-700 transform rotate-45 top-1/2 -translate-y-1/2 
-              ${isLeft ? 'right-[-7px] border-t border-r' : 'left-[-7px] border-b border-l'}`
-          }></div>
-          <div className="relative">
-              <time className="text-sm font-bold text-blue-400 uppercase tracking-wider">{encontro.date}</time>
-              <p className="mt-2 text-slate-200 leading-relaxed">{encontro.title}</p>
-          </div>
-      </div>
-  );
-  
-  const centerDot = (
-      <div className="w-2/12 flex justify-center" aria-hidden="true">
-            <div className={`w-4 h-4 bg-blue-500 rounded-full border-4 border-slate-800 z-10 motion-safe:transition-transform motion-safe:duration-500 ${isVisible ? 'scale-100' : 'scale-0'} motion-reduce:scale-100`}></div>
-      </div>
-  );
-
-  return (
-    <li ref={ownRef} className="flex justify-between items-center w-full">
-      {isLeft ? (
-        <>
-          <div className="w-5/12">{contentCard}</div>
-          {centerDot}
-          <div className="w-5/12" aria-hidden="true"></div>
-        </>
-      ) : (
-        <>
-          <div className="w-5/12" aria-hidden="true"></div>
-          {centerDot}
-          <div className="w-5/12">{contentCard}</div>
-        </>
-      )}
-    </li>
-  );
-};
+));
 
 const Timeline: React.FC<{ encontros: Encontro[] }> = ({ encontros }) => {
   return (
@@ -213,7 +177,7 @@ const Conclusion = () => (
                 A pesquisa completa oferece uma análise aprofundada sobre a aplicação do curso e os resultados obtidos. Explore a dissertação para entender as nuances da medicalização na educação.
             </p>
             <div className="bg-white p-4 rounded-lg shadow-lg mb-6">
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARgAAAGECAYAAAD9extiAAAAAklEQVR4AewaftIAAAXcSURBVO3BQW4kCQwEwSxC/8v94B8QSAgLmNu4dnuAbj6A/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/eEAHqAPeAD94QAeoA94AP3hAB6gD3iA/nAA/e-Q+U/gPqXwP1b+78B4+IAAAAAElFTkSuQmCC" alt="QR Code para a dissertação" className="w-48 h-48" />
+                <img src="https://i.imgur.com/gzaD3sa.png" alt="QR Code direcionando para a dissertação completa" className="w-48 h-48" loading="lazy" decoding="async" />
             </div>
             <div className="bg-slate-800 p-4 rounded-lg max-w-3xl w-full text-left text-sm text-slate-400">
                 <p>

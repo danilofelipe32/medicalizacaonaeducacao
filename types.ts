@@ -1,2 +1,4 @@
-
-import React from 'react';
+export interface Encontro {
+  date: string;
+  title: string;
+}
