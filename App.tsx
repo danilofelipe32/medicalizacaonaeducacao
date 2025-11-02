@@ -189,12 +189,40 @@ const Conclusion = () => (
 );
 
 const Footer = () => (
-    <footer className="bg-slate-900/50 border-t border-sky-800/50 py-10">
-        <div className="container mx-auto px-6 text-center text-slate-500">
-            <p className="font-semibold text-white mb-2">Créditos</p>
-            <p className="mb-1"><strong className="font-medium text-slate-300">Autora:</strong> Kessiane Sales Izidim da Silva</p>
-            <p className="mb-1"><strong className="font-medium text-slate-300">Orientadora:</strong> Profa. Dra Maria da Apresentação Barreto</p>
-            <p><strong className="font-medium text-slate-300">Co-orientadora:</strong> Profª Dra. Jacyene Melo de O. Araújo</p>
+    <footer className="bg-slate-900/50 border-t border-sky-800/50 py-12">
+        <div className="container mx-auto px-6 text-center text-slate-400">
+            <h2 className="text-2xl font-bold text-white mb-10 text-glow">Créditos</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-4xl mx-auto mb-12">
+                <div className="flex flex-col items-center">
+                    <img 
+                        src="https://i.imgur.com/tHUbeMm.jpeg" 
+                        alt="Foto de Kessiane Sales Izidim da Silva" 
+                        className="w-28 h-28 rounded-full object-cover border-4 border-sky-700/60 shadow-lg"
+                    />
+                    <p className="mt-4 font-semibold text-slate-200">Kessiane Sales Izidim da Silva</p>
+                    <p className="text-sm text-sky-400">Autora</p>
+                </div>
+                <div className="flex flex-col items-center">
+                    <img 
+                        src="https://i.imgur.com/AyF8gmb.jpeg" 
+                        alt="Foto de Profa. Dra Maria da Apresentação Barreto" 
+                        className="w-28 h-28 rounded-full object-cover border-4 border-sky-700/60 shadow-lg"
+                    />
+                    <p className="mt-4 font-semibold text-slate-200">Profa. Dra Maria da Apresentação Barreto</p>
+                    <p className="text-sm text-sky-400">Orientadora</p>
+                </div>
+                <div className="flex flex-col items-center">
+                    <img 
+                        src="https://i.imgur.com/Skt1xly.jpeg" 
+                        alt="Foto de Profª Dra. Jacyene Melo de O. Araújo" 
+                        className="w-28 h-28 rounded-full object-cover border-4 border-sky-700/60 shadow-lg"
+                    />
+                    <p className="mt-4 font-semibold text-slate-200">Profª Dra. Jacyene Melo de O. Araújo</p>
+                    <p className="text-sm text-sky-400">Co-orientadora</p>
+                </div>
+            </div>
+
             <div className="mt-4 flex justify-center items-center space-x-4 text-sky-400">
                 <p>UFRN</p>
                 <span>+</span>
