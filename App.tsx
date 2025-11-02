@@ -1,12 +1,25 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { encontrosData } from './constants';
-import { BookOpenIcon, BeakerIcon, AcademicCapIcon, ShareIcon, CheckIcon } from './components/icons';
+import { BookOpenIcon, BeakerIcon, AcademicCapIcon, ShareIcon, CheckIcon, MenuIcon, XIcon } from './components/icons';
 import { TimelineItem } from './components/TimelineItem';
 import { Encontro } from './types';
 import { TimelineModal } from './components/TimelineModal';
 import { SectionCard } from './components/SectionCard';
 
 const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isMenuOpen]);
+
   const handleNavClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
     const targetId = event.currentTarget.getAttribute('href')?.substring(1);
@@ -16,28 +29,52 @@ const Header = () => {
             targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }
+    setIsMenuOpen(false); // Close menu on link click
   };
 
   const handleHomeClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
       event.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      setIsMenuOpen(false); // Close menu on home click
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-sky-950/50 backdrop-blur-lg border-b border-sky-800/50">
-      <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="#" onClick={handleHomeClick} className="font-bold text-lg text-white hover:text-sky-300 transition-colors">
-          Medicalização na Educação
-        </a>
-        <nav>
-          <ul className="flex items-center space-x-6 text-sm font-medium">
-            <li><a href="#pesquisa" onClick={handleNavClick} className="text-slate-300 hover:text-sky-300 transition-colors">A Pesquisa</a></li>
-            <li><a href="#metodologia" onClick={handleNavClick} className="text-slate-300 hover:text-sky-300 transition-colors">Metodologia</a></li>
-            <li><a href="#resultados" onClick={handleNavClick} className="text-slate-300 hover:text-sky-300 transition-colors">Resultados</a></li>
-          </ul>
-        </nav>
-      </div>
-    </header>
+    <>
+      <header className="fixed top-0 left-0 right-0 z-50 bg-sky-950/50 backdrop-blur-lg border-b border-sky-800/50">
+        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+          <a href="#" onClick={handleHomeClick} className="font-bold text-lg text-white hover:text-sky-300 transition-colors">
+            Medicalização na Educação
+          </a>
+          <nav className="hidden md:block">
+            <ul className="flex items-center space-x-6 text-sm font-medium">
+              <li><a href="#pesquisa" onClick={handleNavClick} className="text-slate-300 hover:text-sky-300 transition-colors">A Pesquisa</a></li>
+              <li><a href="#metodologia" onClick={handleNavClick} className="text-slate-300 hover:text-sky-300 transition-colors">Metodologia</a></li>
+              <li><a href="#resultados" onClick={handleNavClick} className="text-slate-300 hover:text-sky-300 transition-colors">Resultados</a></li>
+            </ul>
+          </nav>
+          <button 
+            className="md:hidden text-slate-300 hover:text-sky-300 transition-colors"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"}
+            aria-expanded={isMenuOpen}
+          >
+            {isMenuOpen ? <XIcon className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
+          </button>
+        </div>
+      </header>
+      
+      {isMenuOpen && (
+        <div className="fixed inset-0 z-40 bg-slate-950/90 backdrop-blur-lg md:hidden animate-fade-in">
+          <nav className="flex flex-col items-center justify-center h-full">
+             <ul className="flex flex-col items-center space-y-8 text-xl font-medium">
+               <li><a href="#pesquisa" onClick={handleNavClick} className="text-slate-300 hover:text-sky-300 transition-colors">A Pesquisa</a></li>
+               <li><a href="#metodologia" onClick={handleNavClick} className="text-slate-300 hover:text-sky-300 transition-colors">Metodologia</a></li>
+               <li><a href="#resultados" onClick={handleNavClick} className="text-slate-300 hover:text-sky-300 transition-colors">Resultados</a></li>
+             </ul>
+          </nav>
+        </div>
+      )}
+    </>
   );
 };
 
