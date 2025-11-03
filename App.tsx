@@ -4,6 +4,7 @@ import { BookOpenIcon, BeakerIcon, AcademicCapIcon, ShareIcon, CheckIcon, MenuIc
 import { TimelineItem } from './components/TimelineItem';
 import { Encontro } from './types';
 import { TimelineModal } from './components/TimelineModal';
+import { ImageModal } from './components/ImageModal';
 import { SectionCard } from './components/SectionCard';
 
 const Header = () => {
@@ -222,28 +223,48 @@ const Timeline: React.FC<{ encontros: Encontro[]; onItemClick: (encontro: Encont
   );
 };
 
-const Photos = () => (
-    <Section id="fotos" icon={<PhotographIcon className="w-8 h-8" />} title="Fotos">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            <div className="overflow-hidden rounded-lg border border-sky-800/50 shadow-lg group transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-sky-500/20">
-                <img 
-                    src="https://i.imgur.com/R7gss1U.jpeg"
-                    alt="Participantes do curso reunidos em uma sala de aula" 
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                />
+const Photos: React.FC<{ onImageClick: (url: string) => void }> = ({ onImageClick }) => {
+    const imageUrl1 = "https://i.imgur.com/R7gss1U.jpeg";
+    const imageUrl2 = "https://i.imgur.com/6AifMDE.jpeg";
+
+    return (
+        <Section id="fotos" icon={<PhotographIcon className="w-8 h-8" />} title="Fotos">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div
+                    className="overflow-hidden rounded-lg border border-sky-800/50 shadow-lg group transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-sky-500/20 cursor-pointer"
+                    onClick={() => onImageClick(imageUrl1)}
+                    onKeyPress={(e) => e.key === 'Enter' && onImageClick(imageUrl1)}
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Ver imagem expandida: Participantes do curso reunidos em uma sala de aula"
+                >
+                    <img
+                        src={imageUrl1}
+                        alt="Participantes do curso reunidos em uma sala de aula"
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                    />
+                </div>
+                <div
+                    className="overflow-hidden rounded-lg border border-sky-800/50 shadow-lg group transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-sky-500/20 cursor-pointer"
+                    onClick={() => onImageClick(imageUrl2)}
+                    onKeyPress={(e) => e.key === 'Enter' && onImageClick(imageUrl2)}
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Ver imagem expandida: Participantes do curso durante uma dinâmica"
+                >
+                    <img
+                        src={imageUrl2}
+                        alt="Participantes do curso durante uma dinâmica"
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                    />
+                </div>
             </div>
-            <div className="overflow-hidden rounded-lg border border-sky-800/50 shadow-lg group transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-sky-500/20">
-                <img 
-                    src="https://i.imgur.com/6AifMDE.jpeg"
-                    alt="Participantes do curso durante uma dinâmica" 
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                />
-            </div>
-        </div>
-    </Section>
-);
+        </Section>
+    );
+};
+
 
 const Conclusion = () => (
     <section className="py-20 bg-sky-950/20">
@@ -313,6 +334,7 @@ const Footer = () => (
 
 const App: React.FC = () => {
   const [selectedEncontro, setSelectedEncontro] = useState<Encontro | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   return (
     <div>
@@ -380,12 +402,13 @@ const App: React.FC = () => {
 
         <div className="h-px bg-sky-800/50 max-w-4xl mx-auto"></div>
 
-        <Photos />
+        <Photos onImageClick={setSelectedImage} />
 
         <Conclusion />
       </main>
       <Footer />
       {selectedEncontro && <TimelineModal encontro={selectedEncontro} onClose={() => setSelectedEncontro(null)} />}
+      {selectedImage && <ImageModal imageUrl={selectedImage} onClose={() => setSelectedImage(null)} />}
     </div>
   );
 };
