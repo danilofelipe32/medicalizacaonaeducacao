@@ -67,7 +67,7 @@ export const SectionCard: React.FC<SectionCardProps> = React.memo(({ title, cate
     
     const baseClasses = "bg-sky-900/30 backdrop-blur-lg border border-sky-700/50 shadow-lg rounded-lg transition-all duration-500 ease-out";
     const hoverClasses = !isExpandable ? "hover:bg-sky-900/50 hover:-translate-y-1 hover:shadow-2xl hover:shadow-sky-500/20" : "";
-    const animationClasses = isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5';
+    const animationClasses = isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8';
 
     return (
         <div ref={cardRef} className={`${baseClasses} ${hoverClasses} ${animationClasses}`}>

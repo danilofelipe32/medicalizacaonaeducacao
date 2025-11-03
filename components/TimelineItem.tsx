@@ -22,15 +22,13 @@ const TimelineItemFC: React.FC<{ encontro: Encontro; index: number; onClick: () 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(entry.target);
-        }
+        // Define a visibilidade com base na interseção do elemento com a viewport
+        setIsVisible(entry.isIntersecting);
       },
       {
         root: null,
         rootMargin: '0px',
-        threshold: 0.1,
+        threshold: 0.1, // Anima quando 10% do item está visível
       }
     );
 
