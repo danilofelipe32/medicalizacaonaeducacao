@@ -160,7 +160,11 @@ const Hero = () => {
       
       <button
         onClick={handleShare}
-        className="absolute top-24 right-6 z-20 p-3 rounded-full bg-sky-900/40 text-sky-200 backdrop-blur-sm border border-sky-800/50 hover:bg-sky-800/60 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-sky-500 transition-all duration-300 transform hover:scale-110"
+        className={`absolute top-24 right-6 z-20 p-3 rounded-full backdrop-blur-sm border focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 transform ${
+          isCopied
+            ? 'bg-emerald-500/80 text-white border-emerald-400/50 focus:ring-emerald-500 scale-110'
+            : 'bg-sky-900/40 text-sky-200 border-sky-800/50 hover:bg-sky-800/60 hover:text-white focus:ring-sky-500 hover:scale-110'
+        }`}
         aria-label={isCopied ? 'Link copiado!' : 'Compartilhar página'}
       >
         {isCopied ? (
