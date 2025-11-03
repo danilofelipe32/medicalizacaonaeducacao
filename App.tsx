@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { encontrosData } from './constants';
-import { BookOpenIcon, BeakerIcon, AcademicCapIcon, ShareIcon, CheckIcon, MenuIcon, XIcon } from './components/icons';
+import { BookOpenIcon, BeakerIcon, AcademicCapIcon, ShareIcon, CheckIcon, MenuIcon, XIcon, PhotographIcon } from './components/icons';
 import { TimelineItem } from './components/TimelineItem';
 import { Encontro } from './types';
 import { TimelineModal } from './components/TimelineModal';
@@ -64,6 +64,7 @@ const Header = () => {
               <li><a href="#pesquisa" onClick={handleNavClick} className="text-slate-300 hover:text-sky-300 transition-colors">A Pesquisa</a></li>
               <li><a href="#metodologia" onClick={handleNavClick} className="text-slate-300 hover:text-sky-300 transition-colors">Metodologia</a></li>
               <li><a href="#resultados" onClick={handleNavClick} className="text-slate-300 hover:text-sky-300 transition-colors">Resultados</a></li>
+              <li><a href="#fotos" onClick={handleNavClick} className="text-slate-300 hover:text-sky-300 transition-colors">Fotos</a></li>
             </ul>
           </nav>
           <button 
@@ -84,6 +85,7 @@ const Header = () => {
                <li><a href="#pesquisa" onClick={handleNavClick} className="text-slate-300 hover:text-sky-300 transition-colors">A Pesquisa</a></li>
                <li><a href="#metodologia" onClick={handleNavClick} className="text-slate-300 hover:text-sky-300 transition-colors">Metodologia</a></li>
                <li><a href="#resultados" onClick={handleNavClick} className="text-slate-300 hover:text-sky-300 transition-colors">Resultados</a></li>
+               <li><a href="#fotos" onClick={handleNavClick} className="text-slate-300 hover:text-sky-300 transition-colors">Fotos</a></li>
              </ul>
           </nav>
         </div>
@@ -220,6 +222,29 @@ const Timeline: React.FC<{ encontros: Encontro[]; onItemClick: (encontro: Encont
   );
 };
 
+const Photos = () => (
+    <Section id="fotos" icon={<PhotographIcon className="w-8 h-8" />} title="Fotos">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+            <div className="overflow-hidden rounded-lg border border-sky-800/50 shadow-lg group transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-sky-500/20">
+                <img 
+                    src="https://i.imgur.com/R7gss1U.jpeg"
+                    alt="Participantes do curso reunidos em uma sala de aula" 
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                />
+            </div>
+            <div className="overflow-hidden rounded-lg border border-sky-800/50 shadow-lg group transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-sky-500/20">
+                <img 
+                    src="https://i.imgur.com/6AifMDE.jpeg"
+                    alt="Participantes do curso durante uma dinâmica" 
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                />
+            </div>
+        </div>
+    </Section>
+);
+
 const Conclusion = () => (
     <section className="py-20 bg-sky-950/20">
         <div className="container mx-auto px-6 text-center flex flex-col items-center">
@@ -352,6 +377,10 @@ const App: React.FC = () => {
                 <p>Ao final do curso, os participantes foram certificados pela Pró-Reitoria de Extensão da UFRN, validando a participação e o aprendizado adquirido durante a formação continuada. A conclusão bem-sucedida do curso reforçou a importância do diálogo e da formação crítica sobre a medicalização no ambiente escolar.</p>
             </SectionCard>
         </Section>
+
+        <div className="h-px bg-sky-800/50 max-w-4xl mx-auto"></div>
+
+        <Photos />
 
         <Conclusion />
       </main>
