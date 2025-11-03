@@ -138,7 +138,7 @@ const Hero = () => {
       
       <div className="relative text-center z-10 animate-fade-in-up">
         <div className="flex justify-center items-center mb-1">
-          <img src="https://i.imgur.com/Qyy3QUT.png" alt="Logos UFRN, PPGEEsp e PPGed" className="h-24 w-auto relative top-7" />
+          <img src="https://i.imgur.com/Qyy3QUT.png" alt="Logos UFRN, PPGEEsp e PPGed" className="h-24 w-auto relative top-1.5" />
         </div>
         <h1 className={`mt-10 text-3xl md:text-5xl font-extrabold text-white tracking-tight text-glow transition-transform duration-1000 ease-out ${isTitleAnimated ? 'scale-100' : 'scale-95'}`}>
           Problematizações sobre o Fenômeno da Medicalização da Educação
