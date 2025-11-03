@@ -98,7 +98,6 @@ const Header = () => {
 
 const Hero = () => {
   const parallaxBgRef = useRef<HTMLDivElement>(null);
-  const [isCopied, setIsCopied] = useState(false);
   const [isBgLoaded, setIsBgLoaded] = useState(false);
   const [isTitleAnimated, setIsTitleAnimated] = useState(false);
 
@@ -128,27 +127,6 @@ const Hero = () => {
     };
   }, [imageUrl]);
 
-  const handleShare = async () => {
-    const shareData = {
-      title: document.title,
-      text: 'Confira esta pesquisa sobre o Fenômeno da Medicalização da Educação.',
-      url: window.location.href,
-    };
-
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-      } catch (err) {
-        console.error('Erro ao compartilhar:', err);
-      }
-    } else {
-      navigator.clipboard.writeText(window.location.href).then(() => {
-        setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000);
-      });
-    }
-  };
-
   return (
     <section className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-slate-900">
       <div
@@ -158,22 +136,6 @@ const Hero = () => {
       ></div>
       <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/70 to-transparent z-0"></div>
       
-      <button
-        onClick={handleShare}
-        className={`absolute top-24 right-6 z-20 p-3 rounded-full backdrop-blur-sm border focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 transform ${
-          isCopied
-            ? 'bg-emerald-500/80 text-white border-emerald-400/50 focus:ring-emerald-500 scale-110'
-            : 'bg-sky-900/40 text-sky-200 border-sky-800/50 hover:bg-sky-800/60 hover:text-white focus:ring-sky-500 hover:scale-110'
-        }`}
-        aria-label={isCopied ? 'Link copiado!' : 'Compartilhar página'}
-      >
-        {isCopied ? (
-          <CheckIcon className="w-6 h-6" />
-        ) : (
-          <ShareIcon className="w-6 h-6" />
-        )}
-      </button>
-
       <div className="relative text-center z-10 animate-fade-in-up">
         <div className="flex justify-center items-center mb-1">
           <img src="https://i.imgur.com/Qyy3QUT.png" alt="Logos UFRN, PPGEEsp e PPGed" className="h-24 w-auto relative top-7" />
@@ -339,6 +301,28 @@ const Footer = () => (
 const App: React.FC = () => {
   const [selectedEncontro, setSelectedEncontro] = useState<Encontro | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleShare = async () => {
+    const shareData = {
+      title: document.title,
+      text: 'Confira esta pesquisa sobre o Fenômeno da Medicalização da Educação.',
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.error('Erro ao compartilhar:', err);
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+      });
+    }
+  };
 
   return (
     <div>
@@ -413,6 +397,23 @@ const App: React.FC = () => {
       <Footer />
       {selectedEncontro && <TimelineModal encontro={selectedEncontro} onClose={() => setSelectedEncontro(null)} />}
       {selectedImage && <ImageModal imageUrl={selectedImage} onClose={() => setSelectedImage(null)} />}
+      
+      <button
+        onClick={handleShare}
+        className={`md:hidden fixed bottom-6 right-6 z-50 p-3 rounded-full backdrop-blur-sm border focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 transform shadow-lg ${
+          isCopied
+            ? 'bg-emerald-500/80 text-white border-emerald-400/50 focus:ring-emerald-500 scale-110'
+            : 'bg-sky-900/40 text-sky-200 border-sky-800/50 hover:bg-sky-800/60 hover:text-white focus:ring-sky-500 hover:scale-110'
+        }`}
+        aria-label={isCopied ? 'Link copiado!' : 'Compartilhar página'}
+      >
+        {isCopied ? (
+          <CheckIcon className="w-6 h-6" />
+        ) : (
+          <ShareIcon className="w-6 h-6" />
+        )}
+      </button>
+
     </div>
   );
 };
