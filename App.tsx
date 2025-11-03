@@ -23,13 +23,27 @@ const Header = () => {
   const handleNavClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
     const targetId = event.currentTarget.getAttribute('href')?.substring(1);
-    if (targetId) {
-        const targetElement = document.getElementById(targetId);
-        if (targetElement) {
-            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    }
+    
     setIsMenuOpen(false); // Close menu on link click
+
+    if (targetId) {
+        // Use a timeout to allow the menu to close and avoid scroll issues
+        setTimeout(() => {
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                const headerElement = document.querySelector('header');
+                // Dynamically get the header's height and add a little extra padding for spacing.
+                const headerOffset = headerElement ? headerElement.offsetHeight + 20 : 90;
+                const elementPosition = targetElement.getBoundingClientRect().top + window.scrollY;
+                const offsetPosition = elementPosition - headerOffset;
+    
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth',
+                });
+            }
+        }, 100); // Small delay for UI to react to menu closing
+    }
   };
 
   const handleHomeClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
