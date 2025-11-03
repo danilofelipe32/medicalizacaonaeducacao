@@ -12,7 +12,9 @@ const COLLAPSED_HEIGHT_REM = 4.5; // Corresponds to Tailwind's h-18, approx 3 li
 export const SectionCard: React.FC<SectionCardProps> = React.memo(({ title, category, children }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isExpandable, setIsExpandable] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
     const contentRef = useRef<HTMLDivElement>(null);
+    const cardRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const checkExpandable = () => {
@@ -27,7 +29,6 @@ export const SectionCard: React.FC<SectionCardProps> = React.memo(({ title, cate
             }
         };
 
-        // Check on mount and on window resize
         checkExpandable();
         window.addEventListener('resize', checkExpandable);
         
@@ -36,12 +37,40 @@ export const SectionCard: React.FC<SectionCardProps> = React.memo(({ title, cate
         };
 
     }, [children]);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true);
+                    observer.unobserve(entry.target);
+                }
+            },
+            {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1,
+            }
+        );
+
+        const currentRef = cardRef.current;
+        if (currentRef) {
+            observer.observe(currentRef);
+        }
+
+        return () => {
+            if (currentRef) {
+                observer.unobserve(currentRef);
+            }
+        };
+    }, []);
     
-    const baseClasses = "bg-sky-900/30 backdrop-blur-lg border border-sky-700/50 shadow-lg rounded-lg transition-all duration-300";
+    const baseClasses = "bg-sky-900/30 backdrop-blur-lg border border-sky-700/50 shadow-lg rounded-lg transition-all duration-500 ease-out";
     const hoverClasses = !isExpandable ? "hover:bg-sky-900/50 hover:-translate-y-1 hover:shadow-2xl hover:shadow-sky-500/20" : "";
+    const animationClasses = isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5';
 
     return (
-        <div className={`${baseClasses} ${hoverClasses}`}>
+        <div ref={cardRef} className={`${baseClasses} ${hoverClasses} ${animationClasses}`}>
             <div className="p-6">
                 <p className="mb-2 text-sm font-medium text-sky-400 uppercase tracking-wider">{category}</p>
                 <h3 className="mb-3 font-bold text-white text-xl">{title}</h3>
